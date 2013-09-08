@@ -33,7 +33,7 @@ public class DTLearning {
         double rem = 0;
         ArrayList<Double> sumVal = new ArrayList<Double>();
         ArrayList<ArrayList<Double>> sumEntr = new ArrayList<ArrayList<Double>>();
-        System.out.println("attr size: "+attr.size());
+
         // menghitung total setiap listOfAttribute value
         for(int i=0; i<attr.size(); i++){
             double sum = 0;
@@ -64,6 +64,12 @@ public class DTLearning {
         return rem;
     }
     
+    public double countInfGain(ArrayList<Double> entropy, double remainder){
+        double gain = 0;
+        gain = countEntropy(entropy) - remainder;
+        return gain;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -74,32 +80,68 @@ public class DTLearning {
         System.out.println(AP.Ex.isExampleNegative());
         ArrayList<ArrayList<Double>> test = new ArrayList<ArrayList<Double>>();
         
+        /* tabel outlook */
+        ArrayList<ArrayList<Double>> outlook = new ArrayList<ArrayList<Double>>();
         
-        ArrayList<Double> i1 = new ArrayList<Double>();
-        ArrayList<Double> i2 = new ArrayList<Double>();
-        ArrayList<Double> i3 = new ArrayList<Double>();
+        ArrayList<Double> outlook1 = new ArrayList<Double>();
+        ArrayList<Double> outlook2 = new ArrayList<Double>();
+        ArrayList<Double> outlook3 = new ArrayList<Double>();
         
-        i1.add((double)2);
-        i1.add((double)3);
+        outlook1.add((double)2);
+        outlook1.add((double)3);
         
-        i2.add((double)4);
-        i2.add((double)0);
+        outlook2.add((double)4);
+        outlook2.add((double)0);
         
-        i3.add((double)3);
-        i3.add((double)2);
+        outlook3.add((double)3);
+        outlook3.add((double)2);
         
-        test.add(0, i1);
-        test.add(1, i2);
-        test.add(2, i3);
+        outlook.add(0, outlook1);
+        outlook.add(1, outlook2);
+        outlook.add(2, outlook3);
+        /* end of tabel outlook */
+        
+        
+        /* tabel temperature */
+        ArrayList<ArrayList<Double>> temp = new ArrayList<ArrayList<Double>>();
+        
+        ArrayList<Double> temp1 = new ArrayList<Double>();
+        ArrayList<Double> temp2 = new ArrayList<Double>();
+        ArrayList<Double> temp3 = new ArrayList<Double>();
+        
+        temp1.add((double)2);
+        temp1.add((double)4);
+        
+        temp2.add((double)4);
+        temp2.add((double)2);
+        
+        temp3.add((double)3);
+        temp3.add((double)1);
+        
+        temp.add(0, temp1);
+        temp.add(1, temp2);
+        temp.add(2, temp3);
+        /* end of tabel temperature */
         
         System.out.println("berikut adalah tabel outlook: ");
-        for(int i=0; i< test.size(); i++){
-            System.out.println(test.get(i));
+        for(int i=0; i< outlook.size(); i++){
+            System.out.println(outlook.get(i));
         }
-        System.out.println("test.size: " + test.size());
-        System.out.println("test1.size: " + test.get(0).size());
         System.out.println("menghitung remainder outlook:");
         DTLearning dtl = new DTLearning();
-        dtl.countRemainder(12, test);
+        double c = dtl.countRemainder(12, outlook);
+        
+        System.out.println("berikut adalah tabel temperature: ");
+        for(int i=0; i< temp.size(); i++){
+            System.out.println(temp.get(i));
+        }
+        System.out.println("menghitung remainder temperature:");
+        dtl.countRemainder(12, temp);
+        
+        ArrayList<Double> enGlobal = new ArrayList<Double>();
+        enGlobal.add((double)0.5);
+        enGlobal.add((double)0.5);
+        
+        System.out.println("inf gain outlook: "+dtl.countInfGain(enGlobal, c));
     }
 }
