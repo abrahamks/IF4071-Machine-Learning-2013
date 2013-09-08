@@ -26,12 +26,15 @@ public class DTLearning {
     }
     
     public double countRemainder(int sumEx, ArrayList<ArrayList<Double>> attr){
-        // menghitung remainder untuk sebuah attribute
+        // menghitung remainder untuk sebuah listOfAttribute
+        // ArrayList level 1 --> Attribute values
+        // ArrayList level 2 --> Classification values
+        // sumEx --> total Examples
         double rem = 0;
         ArrayList<Double> sumVal = new ArrayList<Double>();
         ArrayList<ArrayList<Double>> sumEntr = new ArrayList<ArrayList<Double>>();
         System.out.println("attr size: "+attr.size());
-        // menghitung total setiap attribute value
+        // menghitung total setiap listOfAttribute value
         for(int i=0; i<attr.size(); i++){
             double sum = 0;
             for(int j=0; j<attr.get(i).size(); j++){
@@ -50,7 +53,7 @@ public class DTLearning {
             sumEntr.add(n);
         }
         
-        // menghitung remainder attribute
+        // menghitung remainder listOfAttribute
         for(int i=0; i<attr.size(); i++){
             double x = countEntropy(sumEntr.get(i));
             rem += (sumVal.get(i)/sumEx)*countEntropy(sumEntr.get(i));
@@ -66,7 +69,9 @@ public class DTLearning {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-ArffParser AP = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\playtennis.arff");
+    ArffParser AP = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\playtennis.arff");
+        System.out.println("isPos" + AP.Ex.isExamplesPositive());
+        System.out.println(AP.Ex.isExampleNegative());
         ArrayList<ArrayList<Double>> test = new ArrayList<ArrayList<Double>>();
         
         

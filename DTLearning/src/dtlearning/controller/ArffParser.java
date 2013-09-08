@@ -12,22 +12,25 @@ import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import dtlearning.model.*;
 /**
  *
  * @author Abraham Krisnanda
  */
 public class ArffParser {
     private BufferedReader br = null;
-    public ArrayList<ArrayList<String>> attribute;
-    public ArrayList<ArrayList<String>> data;
+    public ArrayList<Attribute> listOfAttribute;
+    public ArrayList<ArrayList<String>> examples;
+    public Examples Ex;
     int i=0;
     public ArffParser(String fileLocation ) {
+        Ex = new Examples();
         try {
             String currentLine;
             String identifier;
             br = new BufferedReader(new FileReader(fileLocation));
-            attribute = new ArrayList<ArrayList<String>>();
-            data = new ArrayList<ArrayList<String>>();
+            listOfAttribute = new ArrayList<>();
+            examples = new ArrayList<ArrayList<String>>();
             while ((currentLine = br.readLine()) != null) {
                 i++;
                 if (!currentLine.equals("")) {
@@ -38,9 +41,11 @@ public class ArffParser {
                                 break;
                             case "@attribute":
                             {
+                                Attribute tempAttribute = new Attribute();
+                                tempAttribute.setAttributeName(currentLine.split(" ")[1]);
                                 String cl = currentLine.replaceAll("\\s",""); // remove whitespace
                                 String[] attrValue = cl.split("\\{")[1].split(",");
-                                ArrayList<String> tempValue = new ArrayList<>();
+                                ArrayList<String> tempValue = new ArrayList<>(); // temp listOfAttribute value
                                 for (int i=0; i<attrValue.length;i++) {
                                     if (i==(attrValue.length-1)) {
                                         // last element, remove the "}"
@@ -50,7 +55,8 @@ public class ArffParser {
                                         tempValue.add(attrValue[i]);
                                     }
                                 }
-                                attribute.add(tempValue);
+                                tempAttribute.setAttributeValue(tempValue);
+                                listOfAttribute.add(tempAttribute);
                             }
                                 break;
                             case "@data":
@@ -58,14 +64,16 @@ public class ArffParser {
                         }
                     }
                     else {
-                        // data
+                        // examples
                         String cl = currentLine.replaceAll("\\s", ""); // remove whitespaces
                         String[] dataValue = cl.split(",");
                         ArrayList<String> tempData = new ArrayList<>();
                         for (int i=0; i < dataValue.length; i++) {
                             tempData.add(dataValue[i]);
                         }
-                        data.add(tempData);
+                        examples.add(tempData);
+                        Ex.setData(examples);
+                        Ex.setAttributes(listOfAttribute);
                     }
                 }
             }
