@@ -24,6 +24,11 @@ public class DTLearning {
         System.out.println("isPos" + AP.Ex.isExamplesPositive());
         System.out.println(AP.Ex.isExampleNegative());
         
+        System.out.println("check ID 3");
+        Node i3 = new Node();
+        i3 = DTLearningOperation.ID3(AP.Ex, AP.listOfAttribute.get(0), AP.listOfAttribute);
+        System.out.println(i3.toString());
+        System.out.println("end checking ID3");
         // ngetest best IG
         DTLearningOperation dtl = new DTLearningOperation();
         String b = "";
@@ -36,25 +41,25 @@ public class DTLearning {
 //        @attribute humidity { high, normal }
 //        @attribute wind { weak, strong }
 //        @attribute playTennis { no, yes}
-        Node o = new Node(AR.get(0));
-        Node h = new Node(AR.get(2));
-        Node w = new Node(AR.get(3));
-        HashMap<String, Object> anak2 = new HashMap<String, Object>();
-        anak2.put(o.getAttribute().getAttributeValue().get(0), h);
-        anak2.put(o.getAttribute().getAttributeValue().get(1), "yes");
-        anak2.put(o.getAttribute().getAttributeValue().get(2), w);
-        HashMap<String, Object> anakH = new HashMap<String, Object>();
-        anakH.put(h.getAttribute().getAttributeValue().get(0), "yes");
-        anakH.put(h.getAttribute().getAttributeValue().get(1), "no");
-        HashMap<String, Object> anakW = new HashMap<String, Object>();
-        anakW.put(w.getAttribute().getAttributeValue().get(0), "yes");
-        anakW.put(w.getAttribute().getAttributeValue().get(1), "no");
-        o.setChildren(anak2);
-        h.setChildren(anakH);
-        w.setChildren(anakW);
-        o.setAllChildrenPos();
-        System.out.println(o.toString());
-        o.setAllChildrenNeg();
-        System.out.println(o.toString());
+//        Node o = new Node(AR.get(0));
+//        Node h = new Node(AR.get(2));
+//        Node w = new Node(AR.get(3));
+//        HashMap<String, Object> anak2 = new HashMap<String, Object>();
+//        anak2.put(o.getAttribute().getAttributeValue().get(0), h);
+//        anak2.put(o.getAttribute().getAttributeValue().get(1), "yes");
+//        anak2.put(o.getAttribute().getAttributeValue().get(2), w);
+//        HashMap<String, Object> anakH = new HashMap<String, Object>();
+//        anakH.put(h.getAttribute().getAttributeValue().get(0), "yes");
+//        anakH.put(h.getAttribute().getAttributeValue().get(1), "no");
+//        HashMap<String, Object> anakW = new HashMap<String, Object>();
+//        anakW.put(w.getAttribute().getAttributeValue().get(0), "yes");
+//        anakW.put(w.getAttribute().getAttributeValue().get(1), "no");
+//        o.setChildren(anak2);
+//        h.setChildren(anakH);
+//        w.setChildren(anakW);
+//        o.setAllChildrenPos();
+//        System.out.println(o.toString());
+//        o.setAllChildrenNeg();
+//        System.out.println(o.toString());
     }
 }
