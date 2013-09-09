@@ -4,6 +4,7 @@
  */
 package dtlearning;
 import dtlearning.controller.*;
+import dtlearning.model.*;
 import java.lang.*;
 import java.util.*;
 
@@ -13,7 +14,7 @@ import java.util.*;
  */
 public class DTLearning {
 
-    public double countEntropy(ArrayList<Double> en){
+   public static double countEntropy(ArrayList<Double> en){
         double etr = 0;
         for(int i=0; i<en.size(); i++){
             if(en.get(i) == 0){
@@ -25,7 +26,7 @@ public class DTLearning {
         return etr;
     }
     
-    public double countRemainder(int sumEx, ArrayList<ArrayList<Double>> attr){
+    public static double countRemainder(int sumEx, ArrayList<ArrayList<Double>> attr){
         // menghitung remainder untuk sebuah listOfAttribute
         // ArrayList level 1 --> Attribute values
         // ArrayList level 2 --> Classification values
@@ -64,7 +65,7 @@ public class DTLearning {
         return rem;
     }
     
-    public double countInfGain(ArrayList<Double> entropy, double remainder){
+    public static double countInfGain(ArrayList<Double> entropy, double remainder){
         double gain = 0;
         gain = countEntropy(entropy) - remainder;
         return gain;
@@ -76,6 +77,7 @@ public class DTLearning {
     public static void main(String[] args) {
         // TODO code application logic here
     ArffParser AP = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\playtennis.arff");
+    
         System.out.println("isPos" + AP.Ex.isExamplesPositive());
         System.out.println(AP.Ex.isExampleNegative());
         ArrayList<ArrayList<Double>> test = new ArrayList<ArrayList<Double>>();
@@ -143,5 +145,29 @@ public class DTLearning {
         enGlobal.add((double)0.5);
         
         System.out.println("inf gain outlook: "+dtl.countInfGain(enGlobal, c));
+        
+        ArrayList<Attribute> AR = AP.listOfAttribute;
+//        @attribute outlook { sunny, overcast, rain }
+//        @attribute temperature { hot, mild, cool }
+//        @attribute humidity { high, normal }
+//        @attribute wind { weak, strong }
+//        @attribute playTennis { no, yes}
+        Node o = new Node(AR.get(0));
+        Node h = new Node(AR.get(2));
+        Node w = new Node(AR.get(3));
+        HashMap<String, Object> anak2 = new HashMap<String, Object>();
+        anak2.put(o.getAttribute().getAttributeValue().get(0), h);
+        anak2.put(o.getAttribute().getAttributeValue().get(1), "yes");
+        anak2.put(o.getAttribute().getAttributeValue().get(2), w);
+        HashMap<String, Object> anakH = new HashMap<String, Object>();
+        anakH.put(h.getAttribute().getAttributeValue().get(0), "yes");
+        anakH.put(h.getAttribute().getAttributeValue().get(1), "no");
+        HashMap<String, Object> anakW = new HashMap<String, Object>();
+        anakW.put(w.getAttribute().getAttributeValue().get(0), "yes");
+        anakW.put(w.getAttribute().getAttributeValue().get(1), "no");
+        o.setChildren(anak2);
+        h.setChildren(anakH);
+        w.setChildren(anakW);
+        System.out.println(o.toString());
     }
 }
