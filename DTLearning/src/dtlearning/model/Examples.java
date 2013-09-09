@@ -21,6 +21,10 @@ public class Examples {
         // banyak data --> data.size()
     }
     
+    public Examples (Examples ex) {
+        attributes = new ArrayList<Attribute>(ex.attributes);
+        data = new ArrayList<ArrayList<String>>(ex.data);
+    }
     /**
      * @return the data
      */

@@ -15,6 +15,11 @@ public class Attribute {
     public Attribute() {
         attributeValue = new ArrayList<String>();
     }
+    
+    public Attribute (Attribute attr) {
+        attributeName = attr.attributeName;
+        attributeValue = new ArrayList<String>(attr.attributeValue);
+    }
     /**
      * @return the attributeName
      */
