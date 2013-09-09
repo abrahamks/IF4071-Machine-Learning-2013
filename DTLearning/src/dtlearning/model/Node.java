@@ -58,6 +58,26 @@ public class Node{
         this.children = children;
     }
     
+    public void setAllChildrenPos() {
+        // Return the single-node tree Root, label +
+        HashMap<String,Object> allPositive = new HashMap<String,Object>();
+        for (int i=0; i < this.getAttribute().getAttributeValue().size(); i++) {
+            String k = this.getAttribute().getAttributeValue().get(i); // key
+            allPositive.put(k,"yes");
+        }
+        this.children = allPositive;
+    }
+    
+    public void setAllChildrenNeg() {
+        // Return the single-node tree Root, label +
+        HashMap<String,Object> allNegative = new HashMap<String,Object>();
+        for (int i=0; i < this.getAttribute().getAttributeValue().size(); i++) {
+            String k = this.getAttribute().getAttributeValue().get(i); // key
+            allNegative.put(k,"no");
+        }
+        this.children = allNegative;
+    }
+    
     public boolean isLeaf() {
         boolean flag = true;
         for(int i=0; i < this.getChildren().size(); i++) {
