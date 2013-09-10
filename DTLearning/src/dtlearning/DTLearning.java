@@ -20,7 +20,8 @@ public class DTLearning {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        ArffParser AP = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\playtennis.arff");
+		ArffParser AP = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\playtennis.arff");
+        //ArffParser AP = new ArffParser("F:\\Amelia\\Documents\\Teknik Informatika 2010\\Semester 7\\IF4071 Machine Learning\\Eksperimen DTL\\playtennis.arff");
         System.out.println("isPos" + AP.Ex.isExamplesPositive());
         System.out.println(AP.Ex.isExampleNegative());
         
