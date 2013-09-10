@@ -20,23 +20,23 @@ public class DTLearning {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-//ArffParser AP = new ArffParser("F:\\Amelia\\Documents\\Teknik Informatika 2010\\Semester 7\\IF4071 Machine Learning\\Eksperimen DTL\\playtennis.arff");        System.out.println("isPos" + AP.Ex.isExamplesPositive());
+        ArffParser AP = new ArffParser("F:\\Amelia\\Documents\\Teknik Informatika 2010\\Semester 7\\IF4071 Machine Learning\\Eksperimen DTL\\playtennis.arff");        System.out.println("isPos" + AP.Ex.isExamplesPositive());
         System.out.println(AP.Ex.isExampleNegative());
         
-//        System.out.println("check ID 3");
-//        Node i3 = new Node();
-//        i3 = DTLearningOperation.ID3(AP.Ex, AP.listOfAttribute.get(0), AP.listOfAttribute);
-//        System.out.println(i3.toString());
-//        System.out.println("end checking ID3");
+        System.out.println("check ID 3");
+        Node i3 = new Node();
+        DTLearningOperation D = new DTLearningOperation();
+        i3 = D.ID3(AP.Ex, AP.listOfAttribute.get(0), AP.listOfAttribute);
+        System.out.println(i3.toString());
+        System.out.println("end checking ID3");
 //        // ngetest best IG
+                
+//        String b = "";
+//        b = DTLearningOperation.BestInfGain(AP.Ex);
+//        System.out.println("best: " + b);
         
         
-        DTLearningOperation dtl = new DTLearningOperation();
-        String b = "";
-        b = dtl.BestInfGain(AP.Ex);
-        System.out.println("best: " + b);
-        
-        ArrayList<Attribute> AR = AP.listOfAttribute;
+//        ArrayList<Attribute> AR = AP.listOfAttribute;
 //        @attribute outlook { sunny, overcast, rain }
 //        @attribute temperature { hot, mild, cool }
 //        @attribute humidity { high, normal }

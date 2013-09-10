@@ -19,11 +19,12 @@ public class DTLearningOperation {
      public static double countEntropy(ArrayList<Double> en){
         double etr = 0;
         for(int i=0; i<en.size(); i++){
-            if(en.get(i) == 0){
-                etr = 0;
+            if(en.get(i) == 0.0){
+                etr = 0.0;
+                break;
             }else{
                 etr += -(en.get(i)*(Math.log(2)/Math.log(en.get(i))));
-            }            
+            }        
         }
         return etr;
     }
@@ -161,10 +162,14 @@ public class DTLearningOperation {
                 i--;
             }
         }
+        for(int j=0; j<oldEx.getData().size(); j++){
+            oldEx.getData().get(j).remove(indexParent);
+        }
+        oldEx.getAttributes().remove(indexParent);
         return oldEx;
     }
     
-    public static Node ID3(Examples Ex, Attribute Target_attr, ArrayList<Attribute> Attributes) {
+    public Node ID3(Examples Ex, Attribute Target_attr, ArrayList<Attribute> Attributes) {
         // create a Root node for the tree
         Node root = new Node();
         if (Ex.isExamplesPositive()) {
@@ -229,7 +234,7 @@ public class DTLearningOperation {
                 // add a new tree branch below root
                 exampleVi = FilterExamples(Ex, A, A.getAttributeValue().get(i));
                 // filter examples Ex by value tempAttr from Attribute A(Parent)
-                if (exampleVi.getData().isEmpty()) {
+                if (exampleVi.getData().size()==1) {
                     // dari sini
                     int index = Ex.getAttributes().indexOf(Target_attr);
                     int numOfValue = Ex.getAttributes().get(index).getAttributeValue().size();
@@ -259,24 +264,24 @@ public class DTLearningOperation {
                 }
                 else{
                     Node NodeID3 = new Node();
-                    ArrayList<Attribute> Attributes_A = Attributes;
-                    Attributes_A.remove(A);
-                    Attribute predictiveTarget_attr;
+                    ArrayList<Attribute> Attributes_A = exampleVi.getAttributes();
+                    //Attributes_A.remove(A);
                     
-                    String tempAttr2 = BestInfGain(Ex); // A <-- attribute name best classifies Example
-                    int flag2=-1; // index attribute
-                    for (int ii=0; ii < Attributes_A.size(); ii++) {
-                        if (Attributes_A.get(ii).getAttributeName().equals(tempAttr2)) {
-                            flag2=ii;
-                            break;
-                        }
-                    }
-                    System.out.println("a");
-                    predictiveTarget_attr = Attributes_A.get(flag2);
+//                    Attribute predictiveTarget_attr;
+//                    
+//                    String tempAttr2 = BestInfGain(exampleVi); // A <-- attribute name best classifies Example
+//                    int flag2=-1; // index attribute
+//                    for (int ii=0; ii < Attributes_A.size(); ii++) {
+//                        if (Attributes_A.get(ii).getAttributeName().equals(tempAttr2)) {
+//                            flag2=ii;
+//                            break;
+//                        }
+//                    }
+//                    System.out.println("a");
+//                    predictiveTarget_attr = Attributes_A.get(flag2);
                     
-                    
-                    
-                    NodeID3 = ID3(exampleVi, predictiveTarget_attr, Attributes_A);
+                    NodeID3 = new Node();
+                    NodeID3 = ID3(exampleVi, Target_attr, Attributes_A);
                     branch.put(Target_attr.getAttributeValue().get(i), NodeID3);
                 }
             }
