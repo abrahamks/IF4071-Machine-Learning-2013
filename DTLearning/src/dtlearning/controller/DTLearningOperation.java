@@ -70,6 +70,7 @@ public class DTLearningOperation {
     public static double countInfGain(ArrayList<Double> entropy, double remainder){
         double gain = 0;
         gain = countEntropy(entropy) - remainder;
+        System.out.println("IG = "+gain);
         return gain;
     }
     
@@ -124,6 +125,7 @@ public class DTLearningOperation {
             ArrayList<AttributeCalculation> tab = new ArrayList<AttributeCalculation>();
             tab = createTableAttr(ex, i);
             double remainder = countRemainder(numOfData, tab);
+            System.out.print("("+ex.getAttributes().get(i).getAttributeName() + ")");
             double IG = countInfGain(ent, remainder);
             AttributeIG ig = new AttributeIG();
             ig.setAtrName(ex.getAttributes().get(i).getAttributeName());
@@ -131,9 +133,20 @@ public class DTLearningOperation {
             best.add(ig);
         }
         
-        Collections.sort(best, new CustomComparator());
-        bestAtt = best.get(0).getAtrName();
+        // Collections.sort(best, new CustomComparator());
+        double maxVal = Double.MIN_VALUE;
+        for (int i = 0; i < best.size(); i++){
+            if (!Double.isNaN(best.get(i).getGain())){
+                if (best.get(i).getGain() > maxVal){
+                    maxVal = best.get(i).getGain();
+                    bestAtt = best.get(i).getAtrName();
+                }
+            }
+        }
+
+        System.out.println("maxVal : " + maxVal);
         
+        System.out.println("Best IG = "+bestAtt+"\n");     
         return bestAtt;
     }
     
@@ -154,7 +167,14 @@ public class DTLearningOperation {
     
     public static Examples FilterExamples (Examples oldEx, Attribute parent, String attrValue ) {
         String lineRemoved = "";
-        int indexParent = oldEx.getAttributes().indexOf(parent);
+        int indexParent = -1;
+        for (int i = 0; i < oldEx.getAttributes().size(); i++){
+            if (oldEx.getAttributes().get(i).getAttributeName().equals(parent.getAttributeName())){
+                indexParent = i;
+                break;
+            }
+        }
+        
         // iterate data in index indexParent for value=attrValue
         for (int i=0; i< oldEx.getData().size(); i++) {
             if (!(oldEx.getData().get(i).get(indexParent).equals(attrValue))) {
@@ -163,24 +183,32 @@ public class DTLearningOperation {
             }
         }
         for(int j=0; j<oldEx.getData().size(); j++){
-            oldEx.getData().get(j).remove(indexParent);
+            oldEx.getData().get(j).remove(oldEx.getData().get(j).get(indexParent));
         }
-        oldEx.getAttributes().remove(indexParent);
+        oldEx.getAttributes().remove(oldEx.getAttributes().get(indexParent));
         return oldEx;
     }
     
     public Node ID3(Examples Ex, Attribute Target_attr, ArrayList<Attribute> Attributes) {
         // create a Root node for the tree
         Node root = new Node();
-        if (Ex.isExamplesPositive()) {
+        if (Ex.isExampleEmpty()){
+            root.setAttribute(null);
+            root.setChildren(new HashMap<String,Object>());
+        }
+        else if (Ex.isExamplesPositive()) {
             // if all Examples are positive, Return the single-node tree Root, label +
-            root.setAttribute(Target_attr);
-            root.setAllChildrenPos();
+//            root.setAttribute(Target_attr);
+//            root.setAllChildrenPos();
+            root.setAttribute(null);
+            root.setChildren(new HashMap<String,Object>());
         }
         else if (Ex.isExampleNegative()) {
              // if all Examples are negative, Return the single-node tree Root, label -
             root.setAttribute(Target_attr);
             root.setAllChildrenNeg();
+            root.setAttribute(null);
+            root.setChildren(null);
         }
         else if (Attributes.size()==2) {
             // 2 --> targetAttribute & classification
@@ -223,44 +251,54 @@ public class DTLearningOperation {
                     break;
                 }
             }
-            System.out.println("a");
             Attribute A = Attributes.get(flag);
             root.setAttribute(A);
             // The decision attribute for Root <- A
             HashMap <String, Object> branch = new HashMap <String, Object> ();
-            Examples exampleVi = new Examples();
+            
             for (int i=0; i < A.getAttributeValue().size() ; i++) {
                 // for each possible value i of A
                 // add a new tree branch below root
-                exampleVi = FilterExamples(Ex, A, A.getAttributeValue().get(i));
+                Examples Excpy = new Examples(Ex);
+                Examples exampleVi = FilterExamples(Excpy, A, A.getAttributeValue().get(i));
                 // filter examples Ex by value tempAttr from Attribute A(Parent)
                 if (exampleVi.getData().size()==1) {
                     // dari sini
-                    int index = Ex.getAttributes().indexOf(Target_attr);
-                    int numOfValue = Ex.getAttributes().get(index).getAttributeValue().size();
-                    int numOfAttr = Ex.getAttributes().size();
+                    int index = -1;
+                    for (int j = 0; j < Excpy.getAttributes().size(); j++){
+                        if (Excpy.getAttributes().get(j).getAttributeName().equals(Target_attr.getAttributeName())){
+                            index = j;
+                            break;
+                        }
+                    }
+                    
+                    int numOfValue = Excpy.getAttributes().get(index).getAttributeValue().size();
+                    int numOfAttr = Excpy.getAttributes().size();
+                    
+                    HashMap<String, Object> mostCommonValue = new HashMap<String,Object>();
 
                     for(int k=0; k<numOfValue; k++){
                         int nYes=0; // jumlah value Yes
                         int nNo=0; // jumlah value No
-                        for (int j=0; j< Ex.getData().size(); j++) {
-                            String value = Ex.getAttributes().get(index).getAttributeValue().get(k); // attribute value (wind/strong)
-                            if (Ex.getData().get(j).get(index).equals(value) && Ex.getData().get(j).get(numOfAttr-1).equals("yes")){
+                        for (int j=0; j< Excpy.getData().size(); j++) {
+                            String value = Excpy.getAttributes().get(index).getAttributeValue().get(k); // attribute value (wind/strong)
+                            if (Excpy.getData().get(j).get(index).equals(value) && Excpy.getData().get(j).get(numOfAttr-1).equals("yes")){
                                 nYes++;
                             }
-                            else if(Ex.getData().get(j).get(index).equals(value) && Ex.getData().get(j).get(numOfAttr-1).equals("no")){
+                            else if(Excpy.getData().get(j).get(index).equals(value) && Excpy.getData().get(j).get(numOfAttr-1).equals("no")){
                                 nNo++;
                             }
                         }
 
                         if(nYes > nNo){
                             // set attribute value dengan "yes"
-                            branch.put(Target_attr.getAttributeValue().get(k), "yes");
+                            mostCommonValue.put(Target_attr.getAttributeValue().get(k), "yes");
                         }else{
                             // set attribute value dengan "no"
-                            branch.put(Target_attr.getAttributeValue().get(k), "no");
+                            mostCommonValue.put(Target_attr.getAttributeValue().get(k), "no");
                         }
                     }
+                    root.setChildren(mostCommonValue);
                 }
                 else{
                     Node NodeID3 = new Node();
@@ -281,10 +319,11 @@ public class DTLearningOperation {
 //                    predictiveTarget_attr = Attributes_A.get(flag2);
                     
                     NodeID3 = new Node();
-                    NodeID3 = ID3(exampleVi, Target_attr, Attributes_A);
-                    branch.put(Target_attr.getAttributeValue().get(i), NodeID3);
+                    NodeID3 = ID3(exampleVi, exampleVi.getAttributes().get(0), Attributes_A);
+                    branch.put(A.getAttributeValue().get(i), NodeID3);                    
                 }
             }
+            root.setChildren(branch);
         }
         return root;
     }

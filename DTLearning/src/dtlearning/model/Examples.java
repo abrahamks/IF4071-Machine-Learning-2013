@@ -76,5 +76,9 @@ public class Examples {
         }
         return classificationValue;
     }
+    
+    public boolean isExampleEmpty() {
+        return (getData().isEmpty());
+    }
 
 }

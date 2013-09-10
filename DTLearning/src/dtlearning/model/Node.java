@@ -90,26 +90,35 @@ public class Node{
         return flag;
     }
     
-    public String toString() {
-    String result="";
-    // basis
-    for (int i=0; i < this.children.size(); i++) {
-        result += "\n" + this.attribute.getAttributeName();
-        String keyIndex = this.attribute.getAttributeValue().get(i);
-        result += "\n |" + keyIndex; // root
-        result += "\n ||_>" + this.children.get(keyIndex).toString();
+    public String toString(){
+        String result = "Model Pohon ID3";
+        result += toString(0);
+        return result;
     }
+    
+    public String toString(int level) {
+        String result = "";
 
-//        int lv=0;
-//        String tree="undefined tree";
-//        if (this.label == 1 ) {
-//            tree=this.attribute.getAttributeName(); // root
-//        }
-//        else {
-//            tree=this.attribute.getAttributeName();
-//            for(int i=0; i < this.getChildren().size(); i++) {
-//                tree +="\n" +  this.getChildren().get(this.attribute.getAttributeValue().get(i)).toString();
-//            }
-    return result;
+        if (this.attribute != null){
+            for (int i=0; i < this.children.size(); i++) {
+                result += "\n";
+                for (int j = 0;j < level; j++){
+                    if (j == level - 1){
+                        result += " |-> ";
+                    }
+                    else{
+                        result += " | ";
+                    }
+                }
+
+                String keyIndex = this.attribute.getAttributeValue().get(i);
+                result +=  this.attribute.getAttributeName() + " : " + keyIndex;
+                result += ((Node)this.children.get(keyIndex)).toString(level + 1);
+            }
+        }
+        else{
+            result += " : " + ((this.children != null) ? "yes" : "no");
+        }
+        return result;
     }
 }

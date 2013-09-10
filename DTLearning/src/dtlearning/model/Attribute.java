@@ -18,7 +18,10 @@ public class Attribute {
     
     public Attribute (Attribute attr) {
         attributeName = attr.attributeName;
-        attributeValue = new ArrayList<String>(attr.attributeValue);
+        attributeValue = new ArrayList<String>();
+        for (int i = 0; i < attr.attributeValue.size(); i++){
+            attributeValue.add(attr.attributeValue.get(i));
+        }
     }
     /**
      * @return the attributeName
