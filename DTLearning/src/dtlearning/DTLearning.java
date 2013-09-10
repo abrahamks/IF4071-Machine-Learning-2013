@@ -20,17 +20,17 @@ public class DTLearning {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-		ArffParser AP = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\playtennis.arff");
-        //ArffParser AP = new ArffParser("F:\\Amelia\\Documents\\Teknik Informatika 2010\\Semester 7\\IF4071 Machine Learning\\Eksperimen DTL\\playtennis.arff");
-        System.out.println("isPos" + AP.Ex.isExamplesPositive());
+//ArffParser AP = new ArffParser("F:\\Amelia\\Documents\\Teknik Informatika 2010\\Semester 7\\IF4071 Machine Learning\\Eksperimen DTL\\playtennis.arff");        System.out.println("isPos" + AP.Ex.isExamplesPositive());
         System.out.println(AP.Ex.isExampleNegative());
         
-        System.out.println("check ID 3");
-        Node i3 = new Node();
-        i3 = DTLearningOperation.ID3(AP.Ex, AP.listOfAttribute.get(0), AP.listOfAttribute);
-        System.out.println(i3.toString());
-        System.out.println("end checking ID3");
-        // ngetest best IG
+//        System.out.println("check ID 3");
+//        Node i3 = new Node();
+//        i3 = DTLearningOperation.ID3(AP.Ex, AP.listOfAttribute.get(0), AP.listOfAttribute);
+//        System.out.println(i3.toString());
+//        System.out.println("end checking ID3");
+//        // ngetest best IG
+        
+        
         DTLearningOperation dtl = new DTLearningOperation();
         String b = "";
         b = dtl.BestInfGain(AP.Ex);

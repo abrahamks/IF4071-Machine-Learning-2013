@@ -152,17 +152,16 @@ public class DTLearningOperation {
         }
     
     public static Examples FilterExamples (Examples oldEx, Attribute parent, String attrValue ) {
-        Examples newEx = new Examples();
-        newEx = oldEx;
         String lineRemoved = "";
-        int indexParent = newEx.getAttributes().indexOf(parent);
+        int indexParent = oldEx.getAttributes().indexOf(parent);
         // iterate data in index indexParent for value=attrValue
-        for (int i=0; i< newEx.getData().size(); i++) {
-            if (!newEx.getData().get(i).get(indexParent).equals(attrValue)) {
-                lineRemoved = newEx.getData().remove(i).toString(); // remove dari newEx karena ga penting
+        for (int i=0; i< oldEx.getData().size(); i++) {
+            if (!(oldEx.getData().get(i).get(indexParent).equals(attrValue))) {
+                lineRemoved = oldEx.getData().remove(i).toString(); // remove dari newEx karena ga penting
+                i--;
             }
         }
-        return newEx;
+        return oldEx;
     }
     
     public static Node ID3(Examples Ex, Attribute Target_attr, ArrayList<Attribute> Attributes) {
@@ -219,6 +218,7 @@ public class DTLearningOperation {
                     break;
                 }
             }
+            System.out.println("a");
             Attribute A = Attributes.get(flag);
             root.setAttribute(A);
             // The decision attribute for Root <- A
@@ -261,7 +261,22 @@ public class DTLearningOperation {
                     Node NodeID3 = new Node();
                     ArrayList<Attribute> Attributes_A = Attributes;
                     Attributes_A.remove(A);
-                    NodeID3 = ID3(exampleVi, Target_attr, Attributes_A);
+                    Attribute predictiveTarget_attr;
+                    
+                    String tempAttr2 = BestInfGain(Ex); // A <-- attribute name best classifies Example
+                    int flag2=-1; // index attribute
+                    for (int ii=0; ii < Attributes_A.size(); ii++) {
+                        if (Attributes_A.get(ii).getAttributeName().equals(tempAttr2)) {
+                            flag2=ii;
+                            break;
+                        }
+                    }
+                    System.out.println("a");
+                    predictiveTarget_attr = Attributes_A.get(flag2);
+                    
+                    
+                    
+                    NodeID3 = ID3(exampleVi, predictiveTarget_attr, Attributes_A);
                     branch.put(Target_attr.getAttributeValue().get(i), NodeID3);
                 }
             }
