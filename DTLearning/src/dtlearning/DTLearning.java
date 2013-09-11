@@ -19,12 +19,21 @@ public class DTLearning {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        ArffParser AP = new ArffParser("F:\\Amelia\\Documents\\Teknik Informatika 2010\\Semester 7\\IF4071 Machine Learning\\Eksperimen DTL\\playtennis.arff");
-        
-        Node i3 = new Node();
+        ArffParser AP = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\coba.arff");
+        ArffParser PT = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\playtennis.arff");
         DTLearningOperation D = new DTLearningOperation();
-        i3 = D.ID3(AP.Ex, AP.listOfAttribute.get(0), AP.listOfAttribute);
+        Node i3 = new Node();
+        i3 = D.ID3(PT.Ex, PT.listOfAttribute.get(0), PT.listOfAttribute);
+        
+        
+        
         System.out.println("-----------------------------");
         System.out.println(i3.toString());
+        System.out.println("______________________________");
+        Examples aa = new Examples();
+        aa = D.dataSetGenerator(PT.Ex);
+        //aa = D.CobaClassify(AP.Ex,i3);
+        //System.out.println(aa.toString());
+        
     }
 }

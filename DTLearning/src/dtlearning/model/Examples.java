@@ -80,5 +80,23 @@ public class Examples {
     public boolean isExampleEmpty() {
         return (getData().isEmpty());
     }
+    
+    public int indexOfAttribute (String attrName) {
+        int indexParent=-1;
+        for (int i = 0; i < this.getAttributes().size(); i++){
+            if (this.getAttributes().get(i).getAttributeName().equals(attrName)){
+                indexParent = i;
+                break;
+            }
+        }
+        return indexParent;
+    }
 
+    public String toString() {
+        String result = "";
+        for (int i=0; i < this.getData().size(); i++) {
+            result += this.getData().get(i).toString();
+        }
+        return result;
+    }
 }

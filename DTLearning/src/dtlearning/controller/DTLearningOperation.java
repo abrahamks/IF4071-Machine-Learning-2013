@@ -205,8 +205,8 @@ public class DTLearningOperation {
         }
         else if (Ex.isExampleNegative()) {
              // if all Examples are negative, Return the single-node tree Root, label -
-            root.setAttribute(Target_attr);
-            root.setAllChildrenNeg();
+            //root.setAttribute(Target_attr);
+            //root.setAllChildrenNeg();
             root.setAttribute(null);
             root.setChildren(null);
         }
@@ -326,5 +326,124 @@ public class DTLearningOperation {
             root.setChildren(branch);
         }
         return root;
+    }
+    
+    public Examples ClassifyExamples (Examples dataSet, Node N) {
+        Examples ds = new Examples(dataSet);
+        
+        int rootIndex0 = ds.indexOfAttribute(N.getAttribute().getAttributeName());
+        int resultIndex = ds.getAttributes().size()-1;
+        String tempKey="";
+        for (int i=0; i < dataSet.getData().size(); i++) {
+            tempKey = ds.getData().get(i).get(rootIndex0);
+            Node branchI = new Node();
+            branchI = (Node) N.getChildren().get(tempKey);
+            if (branchI.getAttribute() == null) {
+                // yes / no
+                if (branchI.getChildren() != null) {
+                    // yes
+                    ArrayList<String> data_ds   = new ArrayList<>();
+                    data_ds = ds.getData().get(i);
+                    data_ds.add("yes");
+                }
+                else {
+                    // no
+                    ArrayList<String> data_ds = new ArrayList<>();
+                    data_ds = ds.getData().get(i);
+                    data_ds.add("yes");
+                }
+            }
+            else {
+                for (int j=0; j < branchI.getChildren().size(); j++) {
+                    Node nextNode = new Node();
+                    String tempK = branchI.getAttribute().getAttributeValue().get(j);
+                    nextNode = (Node) branchI.getChildren().get(tempK);
+                    ClassifyExamples(dataSet, nextNode);
+                }
+            }
+        }
+        
+        return ds;
+    }
+    
+    public Examples Classify(Node id3, Examples ex){
+        Examples classify = new Examples(ex);
+        for (int i=0; i < ex.getData().size(); i++) {
+            Node currentNode = new Node();
+            currentNode = id3;
+            String rootAttr = id3.getAttribute().getAttributeName();
+            int indexParent = ex.indexOfAttribute(rootAttr);
+            while (currentNode.getAttribute() != null) {
+                // is not leaf
+                for(int k=0; k< ex.getData().get(i).size(); k++){
+                    for (int j=0; j< id3.getAttribute().getAttributeValue().size();j++) {
+                    // iterasi key
+                        if (ex.getData().get(i).get(k).equals(id3.getAttribute().getAttributeValue().get(j))){
+                            currentNode = (Node) id3.getChildren().get(id3.getAttribute().getAttributeValue().get(j));                            
+                        }
+                    }
+                }
+            }
+            if(currentNode.getAttribute()==null) {
+                if (currentNode.getChildren() != null) {
+                    ArrayList<String> data_ds   = new ArrayList<>();
+                    data_ds = classify.getData().get(i);
+                    data_ds.add("yes");
+                }
+                else {
+                     ArrayList<String> data_ds   = new ArrayList<>();
+                    data_ds = classify.getData().get(i);
+                    data_ds.add("no");
+                }
+            }
+        }
+        return classify;
+    }
+    
+    public Examples CobaClassify (Examples testSet, Node N) {
+        // iterasi sebanyak jmlah data
+        int lastIndex = testSet.getData().get(0).size();
+        for (int nData=0; nData < testSet.getData().size(); nData++) {
+            Node root = N;
+            // belum ketemu yes / no
+            while(!root.isLeaf()) {
+                
+                String SrootAttr = root.getAttribute().getAttributeName();
+                int indexRoot = testSet.indexOfAttribute(SrootAttr); // cari indexRoot
+                String ex_iR = testSet.getData().get(nData).get(indexRoot);// cek example ke-nData pada indexRoot
+                // cari terusan kaki nya
+                Node kaki = ((Node) root.getChildren().get(ex_iR));
+                if (kaki.isLeaf()) {
+                    if (kaki.getChildren()==null) {
+                        // negative
+                        testSet.getData().get(nData).add(lastIndex, "no");
+                        break;
+                    }
+                    else {
+                        // positive
+                        testSet.getData().get(nData).add(lastIndex, "yes");
+                    }
+                }
+                root = new Node(kaki);
+            }
+            System.out.println("halo");
+        }
+        return testSet;
+    }
+    
+    public static ArrayList<Attribute> cloneAttribute(ArrayList<Attribute> ListOfA) {
+        ArrayList<Attribute> clone = new ArrayList<>();
+        for (Attribute item : ListOfA) {
+            Attribute A = new Attribute(item);
+            clone.add(A);
+        }
+        return clone;
+    }
+    
+    public Examples dataSetGenerator(Examples ex) {
+        Examples newDataSet = new Examples(ex);
+        ArrayList<ArrayList<String>> newData= new ArrayList<ArrayList<String>>();
+        ArrayList<Attribute> newAttributes = cloneAttribute(ex.getAttributes());
+        return ex;
     }
 }

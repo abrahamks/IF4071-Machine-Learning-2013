@@ -29,7 +29,12 @@ public class Node{
             this.children.put(this.attribute.getAttributeValue().get(i), null);
         }
     }
-
+    
+    // copy constructor
+    public Node(Node N) {
+        this.attribute = N.getAttribute();
+        this.children = new HashMap<> (N.getChildren());
+    }
     /**
      * @return the attribute
      */
@@ -79,6 +84,15 @@ public class Node{
     }
     
     public boolean isLeaf() {
+        if (this.attribute == null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    public boolean isLeaf0() {
         boolean flag = true;
         for(int i=0; i < this.getChildren().size(); i++) {
             String k = this.getAttribute().getAttributeValue().get(i); // key
@@ -121,4 +135,13 @@ public class Node{
         }
         return result;
     }
+    
+//    public String getChildrenKey_fromIndex(int i) {
+//        for (int j=0; j < this.getChildren().size(); j++) {
+//            if (j==i) {
+//                return this.getChildren().get(key);
+//            }
+//        }
+//        return "";
+//    }
 }
