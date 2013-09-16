@@ -95,7 +95,7 @@ public class Examples {
     public String toString() {
         String result = "";
         for (int i=0; i < this.getData().size(); i++) {
-            result += this.getData().get(i).toString();
+            result += "\n" + this.getData().get(i).toString();
         }
         return result;
     }

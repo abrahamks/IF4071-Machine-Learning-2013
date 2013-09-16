@@ -262,7 +262,7 @@ public class DTLearningOperation {
                 Examples Excpy = new Examples(Ex);
                 Examples exampleVi = FilterExamples(Excpy, A, A.getAttributeValue().get(i));
                 // filter examples Ex by value tempAttr from Attribute A(Parent)
-                if (exampleVi.getData().size()==1) {
+                if (exampleVi.getData().isEmpty()) {
                     // dari sini
                     int index = -1;
                     for (int j = 0; j < Excpy.getAttributes().size(); j++){
@@ -442,8 +442,49 @@ public class DTLearningOperation {
     
     public Examples dataSetGenerator(Examples ex) {
         Examples newDataSet = new Examples(ex);
-        ArrayList<ArrayList<String>> newData= new ArrayList<ArrayList<String>>();
-        ArrayList<Attribute> newAttributes = cloneAttribute(ex.getAttributes());
+        ArrayList<ArrayList<String>> newData= new ArrayList<ArrayList<String>>(); // insialisasi data kosong
+        for (int nAttribute=0; nAttribute < newDataSet.getAttributes().size()-1; nAttribute++) {
+            
+//            ArrayList<String> attrValues = newDataSet.getAttributes().get(nAttribute).getAttributeValue();
+//            for (int attrValueIndex=0; attrValueIndex < attrValues.size(); attrValueIndex++) {
+//                // iterasi attribute value
+//                
+//            }
+            
+            
+            // iterasi keseluruhan attribute
+            ArrayList<String> attrValues = newDataSet.getAttributes().get(nAttribute).getAttributeValue();
+            for (int i=0; i < attrValues.size(); i++) {
+                ArrayList<String> newDataItem = new ArrayList<>();
+                newDataItem.add(attrValues.get(i));
+                newData.add(newDataItem);
+            }
+        }
         return ex;
+    }
+    
+    public Examples BruteForceDataSetGenerator(Examples ex) {
+        Examples newDataSet = new Examples(ex);
+        ArrayList<ArrayList<String>> newData= new ArrayList<ArrayList<String>>(); // insialisasi data kosong
+        Attribute a_outlook = newDataSet.getAttributes().get(0);
+        Attribute a_temperature = newDataSet.getAttributes().get(1);
+        Attribute a_humidity = newDataSet.getAttributes().get(2);
+        Attribute a_wind = newDataSet.getAttributes().get(3);
+        for (int i=0; i < a_outlook.getAttributeValue().size();i++) {
+            for (int j=0; j < a_temperature.getAttributeValue().size();j++) {
+                for (int k=0; k < a_humidity.getAttributeValue().size();k++) {
+                    for (int l=0; l < a_wind.getAttributeValue().size();l++) {
+                        ArrayList<String> newDataItem = new ArrayList<>();
+                        newDataItem.add(a_outlook.getAttributeValue().get(i));
+                        newDataItem.add(a_temperature.getAttributeValue().get(j));
+                        newDataItem.add(a_humidity.getAttributeValue().get(k));
+                        newDataItem.add(a_wind.getAttributeValue().get(l));
+                        newData.add(newDataItem);
+                    }
+                }
+            }
+        }
+        newDataSet.setData(newData);
+        return newDataSet;
     }
 }
