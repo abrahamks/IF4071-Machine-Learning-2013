@@ -23,9 +23,11 @@ public class DTLearning {
         ArffParser model1 = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\playtennis.arff");
         ArffParser model2 = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\playtennis2.arff");
         ArffParser dataset3 = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\dataset3.arff");
+        ArffParser monk = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\train_monk1.arff");
+        ArffParser datasetmonk = new ArffParser("F:\\4th Grade\\1st Semester\\IF4071 - Machine Learning\\Eksperimen DTL\\testdatamonk1.arff");
         DTLearningOperation D = new DTLearningOperation();
         Node i3 = new Node();
-        i3 = D.ID3(model1.Ex, model1.listOfAttribute.get(0), model1.listOfAttribute);
+        i3 = D.ID3(monk.Ex, monk.listOfAttribute.get(0), monk.listOfAttribute);
         
         
         
@@ -33,7 +35,7 @@ public class DTLearning {
         System.out.println(i3.toString());
         System.out.println("______________________________");
         Examples classificationResult = new Examples();
-        classificationResult = D.CobaClassify(dataset3.Ex, i3);
+        classificationResult = D.CobaClassify(datasetmonk.Ex, i3);
         System.out.println(classificationResult.toString());
 //        Examples aa = new Examples();
 //        aa = D.BruteForceDataSetGenerator(PT.Ex);

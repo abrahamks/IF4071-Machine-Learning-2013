@@ -22,8 +22,19 @@ public class Examples {
     }
     
     public Examples (Examples ex) {
-        attributes = new ArrayList<Attribute>(ex.attributes);
-        data = new ArrayList<ArrayList<String>>(ex.data);
+        //attributes = new ArrayList<Attribute>(ex.attributes);
+        attributes = new ArrayList<Attribute>();
+        for (int i = 0; i < ex.attributes.size(); i++) { 
+            attributes.add(new Attribute(ex.attributes.get(i)));
+        } 
+        
+        data = new ArrayList<ArrayList<String>>(); 
+        for (int i = 0; i < ex.data.size(); i++) {
+            data.add(new ArrayList<String>());
+            for (int j = 0; j < ex.data.get(i).size(); j++) {
+                data.get(i).add(ex.data.get(i).get(j)); 
+            } 
+        }
     }
     /**
      * @return the data

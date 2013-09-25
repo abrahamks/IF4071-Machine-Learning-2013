@@ -23,7 +23,7 @@ public class DTLearningOperation {
                 etr = 0.0;
                 break;
             }else{
-                etr += -(en.get(i)*(Math.log(2)/Math.log(en.get(i))));
+                etr += -(en.get(i)*(Math.log(en.get(i))/Math.log(2)));
             }        
         }
         return etr;
@@ -67,9 +67,12 @@ public class DTLearningOperation {
         return rem;
     }
     
-    public static double countInfGain(ArrayList<Double> entropy, double remainder){
-        double gain = 0;
+    public static Double countInfGain(ArrayList<Double> entropy, double remainder){
+        Double gain = 0.0;
         gain = countEntropy(entropy) - remainder;
+        if (gain.isNaN()) {
+            gain = Double.MIN_VALUE;
+        }
         System.out.println("IG = "+gain);
         return gain;
     }
@@ -141,6 +144,9 @@ public class DTLearningOperation {
                     maxVal = best.get(i).getGain();
                     bestAtt = best.get(i).getAtrName();
                 }
+                else if (best.get(i).getGain() == maxVal) {
+                    bestAtt = best.get(i).getAtrName();
+                }
             }
         }
 
@@ -177,13 +183,17 @@ public class DTLearningOperation {
         
         // iterate data in index indexParent for value=attrValue
         for (int i=0; i< oldEx.getData().size(); i++) {
+//           System.out.println("oldEx.getData " + oldEx.getData().toString());
+//           System.out.println("attrValue-index" + attrValue + "_" + indexParent);
             if (!(oldEx.getData().get(i).get(indexParent).equals(attrValue))) {
                 lineRemoved = oldEx.getData().remove(i).toString(); // remove dari newEx karena ga penting
                 i--;
             }
         }
         for(int j=0; j<oldEx.getData().size(); j++){
-            oldEx.getData().get(j).remove(oldEx.getData().get(j).get(indexParent));
+            
+            //oldEx.getData().get(j).remove(oldEx.getData().get(j).get(indexParent));
+            oldEx.getData().get(j).remove(indexParent);
         }
         oldEx.getAttributes().remove(oldEx.getAttributes().get(indexParent));
         return oldEx;
@@ -192,6 +202,13 @@ public class DTLearningOperation {
     public Node ID3(Examples Ex, Attribute Target_attr, ArrayList<Attribute> Attributes) {
         // create a Root node for the tree
         Node root = new Node();
+        if (Target_attr.getAttributeName().equals("head_shape")){
+            for (int xx=0; xx < Target_attr.getAttributeValue().size() ; xx++)
+            if ((Target_attr.getAttributeValue().get(xx)).equals("round")) {
+             
+                System.out.println("kayaknya problem gan");   
+            }
+        }
         if (Ex.isExampleEmpty()){
             root.setAttribute(null);
             root.setChildren(new HashMap<String,Object>());
@@ -201,6 +218,7 @@ public class DTLearningOperation {
 //            root.setAttribute(Target_attr);
 //            root.setAllChildrenPos();
             root.setAttribute(null);
+            root.setChildren(null);
             root.setChildren(new HashMap<String,Object>());
         }
         else if (Ex.isExampleNegative()) {
@@ -234,10 +252,22 @@ public class DTLearningOperation {
                                 
                 if(nYes > nNo){
                     // set attribute value dengan "yes"
-                    mostCommonValue.put(Target_attr.getAttributeValue().get(i), "yes");
+                    //mostCommonValue.put(Target_attr.getAttributeValue().get(i), "yes");
+                    root.setChildren(new HashMap<String,Object>());
+                    break;
                 }else{
                     // set attribute value dengan "no"
-                    mostCommonValue.put(Target_attr.getAttributeValue().get(i), "no");
+                    // mostCommonValue.put(Target_attr.getAttributeValue().get(i), "no");
+                    root.setChildren(null);
+                }
+            }
+            // validas
+            for (int x=0; x < Target_attr.getAttributeValue().size(); x++) {
+                String tempkey="";
+                tempkey = Target_attr.getAttributeValue().get(x);
+                if (mostCommonValue.get(tempkey) instanceof java.lang.String){
+                    String val = (String) (mostCommonValue).get(tempkey);
+                    System.out.println("_____" + val);
                 }
             }
             root.setChildren(mostCommonValue);
@@ -251,6 +281,8 @@ public class DTLearningOperation {
                     break;
                 }
             }
+            System.out.println("tempAttr" + tempAttr);
+            System.out.println("flag" + flag);
             Attribute A = Attributes.get(flag);
             root.setAttribute(A);
             // The decision attribute for Root <- A
@@ -404,6 +436,7 @@ public class DTLearningOperation {
         // iterasi sebanyak jmlah data
         int lastIndex = testSet.getData().get(0).size();
         for (int nData=0; nData < testSet.getData().size(); nData++) {
+            System.out.println("nData" + nData);
             Node root = N;
             // belum ketemu yes / no
             while(!root.isLeaf()) {
@@ -412,19 +445,25 @@ public class DTLearningOperation {
                 int indexRoot = testSet.indexOfAttribute(SrootAttr); // cari indexRoot
                 String ex_iR = testSet.getData().get(nData).get(indexRoot);// cek example ke-nData pada indexRoot
                 // cari terusan kaki nya
-                Node kaki = ((Node) root.getChildren().get(ex_iR));
-                if (kaki.isLeaf()) {
-                    if (kaki.getChildren()==null) {
-                        // negative
-                        testSet.getData().get(nData).add(lastIndex, "no");
-                        break;
-                    }
-                    else {
-                        // positive
-                        testSet.getData().get(nData).add(lastIndex, "yes");
-                    }
+                if (root.getChildren().get(ex_iR) instanceof java.lang.String) {
+                    testSet.getData().get(nData).add(lastIndex, root.getChildren().get(ex_iR).toString());
                 }
-                root = new Node(kaki);
+                else {
+                    Node kaki = ((Node) root.getChildren().get(ex_iR));
+                    if (kaki.isLeaf()) {
+                        if (kaki.getChildren().isEmpty()) {
+                            // negative
+                            testSet.getData().get(nData).add(lastIndex, "no");
+                            break;
+                        }
+                        else {
+                            // positive
+                            testSet.getData().get(nData).add(lastIndex, "yes");
+                        }
+                    }
+                    root = new Node(kaki);
+                }
+                
             }
             System.out.println("halo");
         }
@@ -486,5 +525,33 @@ public class DTLearningOperation {
         }
         newDataSet.setData(newData);
         return newDataSet;
+    }
+    
+    public Examples SplitforDataTrain(Examples ex, double percentage){
+        Examples train = new Examples(ex);
+        int numberOfData = ex.getData().size();
+        int numberOfDataTrain = (int) (percentage * numberOfData);
+        
+        for(int i=numberOfDataTrain; i<train.getData().size(); i++){
+            String removed = train.getData().remove(i).toString();
+            //System.out.println("removing "+removed);
+            i--;
+        }
+        
+        return train;
+    }
+    
+    public Examples SplitforDataTest(Examples ex, double percentage){
+            Examples test = new Examples(ex);
+            int numberOfData = ex.getData().size();
+            int numberOfDataTrain = (int) (percentage * numberOfData);
+
+            ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
+            for(int i=numberOfDataTrain; i<ex.getData().size(); i++){
+                    //System.out.println(ex.getData().get(i).toString());
+                    data.add(ex.getData().get(i));
+            }
+            test.setData(data);
+            return test;
     }
 }
