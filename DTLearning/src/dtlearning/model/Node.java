@@ -126,8 +126,23 @@ public class Node{
                 }
 
                 String keyIndex = this.attribute.getAttributeValue().get(i);
+                
                 result +=  this.attribute.getAttributeName() + " : " + keyIndex;
-                result += ((Node)this.children.get(keyIndex)).toString(level + 1);
+                if (this.children.get(keyIndex) instanceof java.lang.String) {
+                    //result += this.children.get(keyIndex);
+                    Node n = new Node();
+                    Attribute bapaknya = new Attribute(this.attribute);
+                    HashMap<String, Object> isiBapaknya = (this.getChildren());
+                    HashMap<String, Object> h = new HashMap<>();
+                    n.setAttribute(bapaknya);
+                    n.setChildren(h); // hati2
+                    n.toString();
+                }
+                else {
+                    if ((Node) this.children.get(keyIndex) != null) {
+                        result += ((Node)this.children.get(keyIndex)).toString(level + 1);
+                    }
+                }
             }
         }
         else{
