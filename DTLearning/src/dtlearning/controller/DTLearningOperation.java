@@ -23,7 +23,7 @@ public class DTLearningOperation {
                 etr = 0.0;
                 break;
             }else{
-                etr += -(en.get(i)*(Math.log(2)/Math.log(en.get(i))));
+                etr += -(en.get(i)*(Math.log(en.get(i))/Math.log(2)));
             }        
         }
         return etr;
@@ -177,6 +177,9 @@ public class DTLearningOperation {
         
         // iterate data in index indexParent for value=attrValue
         for (int i=0; i< oldEx.getData().size(); i++) {
+            System.out.println("data : " + oldEx.getData().toString());
+            System.out.println("line : " + oldEx.getData().get(i).get(indexParent));
+            System.out.println("attrValue :" + attrValue + "---" + indexParent);
             if (!(oldEx.getData().get(i).get(indexParent).equals(attrValue))) {
                 lineRemoved = oldEx.getData().remove(i).toString(); // remove dari newEx karena ga penting
                 i--;
@@ -487,4 +490,73 @@ public class DTLearningOperation {
         newDataSet.setData(newData);
         return newDataSet;
     }
+    
+    public Examples SplitforDataTrain(Examples ex, double percentage){
+        Examples train = new Examples(ex);
+        int numberOfData = ex.getData().size();
+        int numberOfDataTrain = (int) (percentage * numberOfData);
+        
+        for(int i=numberOfDataTrain; i<train.getData().size(); i++){
+            String removed = train.getData().remove(i).toString();
+            //System.out.println("removing "+removed);
+            i--;
+        }
+        
+        return train;
+    }
+    
+    public Examples SplitforDataTest(Examples ex, double percentage){
+        Examples test = new Examples(ex);
+        int numberOfData = ex.getData().size();
+        int numberOfDataTrain = (int) (percentage * numberOfData);
+        
+        ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
+        for(int i=numberOfDataTrain; i<ex.getData().size(); i++){
+            //System.out.println(ex.getData().get(i).toString());
+            data.add(ex.getData().get(i));
+        }
+        test.setData(data);
+        return test;
+    }
+    
+    public ArrayList<ArrayList<Integer>> ConfusionMatrix(Examples train, Examples result){
+        ArrayList<ArrayList<Integer>> cm = new ArrayList<ArrayList<Integer>>();
+        int yesYES = 0;
+        int yesNO = 0;
+        int noNO = 0;
+        int noYES = 0;
+        int numData = train.getData().size();
+        for(int i=0; i<train.getData().size();i++){
+            if(train.getData().get(i).get(numData-1).equals("yes")){
+                if(result.getData().get(i).get(numData-1).equals("yes")){
+                    yesYES++; // yes diklasifikasikan sebagai yes
+                }
+                else if(result.getData().get(i).get(numData-1).equals("no")){
+                    yesNO++; // yes diklasifikasikan sebagai no
+                }
+            }
+            else if(train.getData().get(i).get(numData-1).equals("no")){
+                 if(result.getData().get(i).get(numData-1).equals("no")){
+                    noNO++; // no diklasifikasikan sebagai no
+                }
+                else if(result.getData().get(i).get(numData-1).equals("yes")){
+                    noYES++; // no diklasifikasikan sebagai yes
+                }
+            }
+        }
+        
+        ArrayList<Integer> yesMatrix = new ArrayList<Integer>();
+        yesMatrix.add(yesYES);
+        yesMatrix.add(yesNO);
+        
+        ArrayList<Integer> noMatrix = new ArrayList<Integer>();
+        noMatrix.add(noNO);
+        noMatrix.add(noYES);
+        
+        cm.add(yesMatrix); // model yes
+        cm.add(noMatrix); // model no
+        
+        return cm;
+    }
+    
 }
