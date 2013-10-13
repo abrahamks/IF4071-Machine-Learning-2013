@@ -40,7 +40,19 @@ public class ANN {
         
         double[] w = {2,3,0};
         int[] target = {1,1,1,0};
-                
-        an.NeuralNetwork(data, w, 1, 1, target, 2, 8);
+               
+        /**    
+        * Topologi: 1 perceptron
+        * @param Data
+        * @param weight
+        * @param learningrate
+        * @param t = threshold
+        * @param target
+        * @param actMode: 0 = linear, 1 = sign, 2 = step, 3 = sigmoid
+        * @param countMode: 0 = incremental, 1 = batch
+        * @param maxIteration 
+        * @param epsilon
+        */ 
+        an.NeuralNetwork(data, w, 1, 1, target, 2, 0, 2, 0);
     }
 }

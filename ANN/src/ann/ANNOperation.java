@@ -53,30 +53,42 @@ public class ANNOperation {
         return 1 / (1 + Math.exp(-x));
     }
     
-    /**
-     * Mode: incremental
+    /**    
      * Topologi: 1 perceptron
      * @param Data
      * @param weight
      * @param learningrate
-     * @param t
+     * @param t = threshold
      * @param target
      * @param actMode: 0 = linear, 1 = sign, 2 = step, 3 = sigmoid
+     * @param countMode: 0 = incremental, 1 = batch
      * @param maxIteration 
+     * @param epsilon
      */
-    public void NeuralNetwork(ArrayList<ArrayList<Integer>> Data, double[] weight, double learningrate, double t, int[] target, int actMode, int maxIteration){
+    public void NeuralNetwork(ArrayList<ArrayList<Integer>> Data, double[] weight, double learningrate, double t, int[] target, int actMode, int countMode, int maxIteration, double epsilon){
         int bias = 1;
         int epoch = 1;
         double out = 0;
         double output = 0;
         double error = 0;
         double tempdelta = 0;
+        double MSE = 0;
+        double tempError;
         ArrayList<Double> deltaW = new ArrayList<Double>();
+        ArrayList<ArrayList<Double>> deltaW_batch = new ArrayList<ArrayList<Double>>();
         
-        int iter = 0;
-        System.out.println("Epoch "+epoch);
-        while (iter<maxIteration){
-            for(int j=0; j<Data.get(0).size(); j++){
+        for(int i=0; i<Data.get(0).size(); i++){
+            ArrayList<Double> temp = new ArrayList<Double>();
+            deltaW_batch.add(temp);
+        }
+        
+        int line = 0;
+        int n = Data.get(0).size();
+        System.out.println("n = "+n);
+        while (epoch<=maxIteration || MSE <= epsilon){
+            System.out.println("\nEpoch / iterasi ke- "+epoch);
+            tempError = 0;
+            for(int j=0; j<Data.get(0).size(); j++){ // melakukan perhitungan pada iterasi ke-epoch
                 for(int i=0; i<Data.size(); i++){
                     System.out.print(Data.get(i).get(j)+"   ");
                 }
@@ -91,7 +103,7 @@ public class ANNOperation {
 
                 switch(actMode){
                     case 0: // linear
-                        output = 0;
+                        output = out;
                         break;
                     case 1: // sign
                         output = SignFunction(out);
@@ -109,25 +121,50 @@ public class ANNOperation {
                 System.out.print(output+" | ");
                 System.out.print(target[j]+" | ");
                 System.out.print(error+"    | ");
+                
+                if(countMode == 0){ // incremental
+                    for(int i=0; i<Data.size(); i++){
+                        tempdelta = learningrate*error*Data.get(i).get(j);
+                        deltaW.add(tempdelta);
+                        System.out.print(deltaW.get(i)+"    ");
+                    }
 
-                for(int i=0; i<Data.size(); i++){
-                    tempdelta = learningrate*error*Data.get(i).get(j);
-                    deltaW.add(tempdelta);
-                    System.out.print(deltaW.get(i)+"    ");
+                    System.out.print(" | ");
+                    for(int i=0; i<Data.size(); i++){
+                        weight[i] = weight[i] + deltaW.get(i);
+                        System.out.print(weight[i]+"    ");
+                    }
+                    deltaW.clear();
+                }else if(countMode == 1){ // batch
+                    for(int i=0; i<Data.size(); i++){
+                        tempdelta = learningrate*error*Data.get(i).get(j);
+                        deltaW_batch.get(i).add(tempdelta);
+                        System.out.print(deltaW_batch.get(i).get(j)+"    ");
+                    }
                 }
                 
-                System.out.print(" | ");
-
-                for(int i=0; i<Data.size(); i++){
-                    weight[i] = weight[i] + deltaW.get(i);
-                    System.out.print(weight[i]+"    ");
-                }
-                deltaW.clear();
-                iter++;
+                tempError += error * error; // (t-o)^2
+                line++;
                 System.out.println();
             }
+            
+            if(countMode == 1){ // batch, add new weight
+                System.out.print("new delta: ");
+                for(int i=0; i<Data.size(); i++){
+                    double deltabatch = 0;
+                    for(int k=0; k<deltaW_batch.get(i).size(); k++){
+                        deltabatch += deltaW_batch.get(i).get(k);
+                    }                    
+                    weight[i] = weight[i] + deltabatch;
+                    System.out.print(weight[i]+"    ");
+                    deltaW_batch.get(i).clear();
+                }  
+                System.out.println();
+            }
+            System.out.println("tempError = "+tempError);
+            MSE = tempError/n;
+            System.out.println("MSE: "+MSE+" , Epsilon: "+epsilon);
             epoch++;
-            System.out.println("Epoch "+epoch);
         }
         
     }
