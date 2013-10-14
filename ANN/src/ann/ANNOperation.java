@@ -82,7 +82,7 @@ public class ANNOperation {
         DecimalFormat df = new DecimalFormat("##.##");
         ArrayList<Double> deltaW = new ArrayList<Double>();
         ArrayList<ArrayList<Double>> deltaW_batch = new ArrayList<ArrayList<Double>>();
-        
+                
         for(int i=0; i<Data.get(0).size(); i++){
             ArrayList<Double> temp = new ArrayList<Double>();
             deltaW_batch.add(temp);
@@ -92,16 +92,15 @@ public class ANNOperation {
         int line = 0;
         int n = Data.get(0).size();
         System.out.println("n = "+n);
+        System.out.println("\t x \t | \t weight \t | output | target | error | \t delta w \t | \t new w");
+        
         while ((flag == true) && (epoch <= maxIteration)){
-            if(MSE == epsilon){
-                System.out.println("udah nol woy");
-            }
             System.out.println("\nEpoch / iterasi ke- "+epoch);
             MSE = 0;
             tempError = 0;
             for(int j=0; j<Data.get(0).size(); j++){ // melakukan perhitungan pada iterasi ke-epoch
                 for(int i=0; i<Data.size(); i++){
-                    System.out.print(Data.get(i).get(j)+" ");
+                    System.out.print(Data.get(i).get(j)+"\t");
                 }
                 System.out.print(" | ");
                 for(int i=0; i<Data.size(); i++){
@@ -129,16 +128,16 @@ public class ANNOperation {
 
                 error = target.get(j) - output;
                 out = 0;
-                System.out.print(output+"\t| ");
-                System.out.print(target.get(j)+" | ");
-                System.out.print(error+"\t| ");
+                System.out.print(df.format(output)+" | ");
+                System.out.print(target.get(j)+"\t | ");
+                System.out.print(df.format(error)+" | ");
                 
                 // menghitung delta W:
                 if(countMode == 0){ // incremental
                     for(int i=0; i<Data.size(); i++){
                         tempdelta = learningrate*error*Data.get(i).get(j);
                         deltaW.add(tempdelta);
-                        System.out.print(df.format(deltaW.get(i))+"\t");
+                        System.out.print(df.format(deltaW.get(i))+"  ");
                     }
 
                     System.out.print(" | ");
@@ -151,7 +150,7 @@ public class ANNOperation {
                     for(int i=0; i<Data.size(); i++){
                         tempdelta = learningrate*error*Data.get(i).get(j);
                         deltaW_batch.get(i).add(tempdelta);
-                        System.out.print(deltaW_batch.get(i).get(j)+"\t");
+                        System.out.print(df.format(deltaW_batch.get(i).get(j))+" ");
                     }
                 }
                 
@@ -181,13 +180,13 @@ public class ANNOperation {
                         o = SigmoidFunction(temp_output);
                         break;
                 }
-                System.out.println("o:"+o);
+                //System.out.println("o:"+o);
                 e = target.get(i) - o;
                 tempError += e * e; // (t-o)^2
             }
-            System.out.println("tempError = "+tempError);
+            System.out.println("tempError = "+df.format(tempError));
             MSE = tempError/n;
-            System.out.println("MSE: "+MSE+" , Epsilon: "+epsilon);
+            System.out.println("MSE: "+df.format(MSE)+" , Epsilon: "+epsilon);
             if(MSE <= epsilon){
                 flag = false;
             }
@@ -201,7 +200,7 @@ public class ANNOperation {
                         deltabatch += deltaW_batch.get(i).get(k);
                     }                    
                     weight.set(i,weight.get(i) + deltabatch);
-                    System.out.print(weight.get(i)+"    ");
+                    System.out.print(df.format(weight.get(i))+" ");
                     deltaW_batch.get(i).clear();
                 }  
                 System.out.println();
