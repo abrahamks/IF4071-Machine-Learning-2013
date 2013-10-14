@@ -168,4 +168,21 @@ public class ANNOperation {
         }
         
     }
+    
+    /**
+     * topologi: 1 hidden layer, s cell
+     * @param Data
+     * @param weight
+     * @param learningrate
+     * @param t
+     * @param target
+     * @param actMode: 0 = linear, 1 = sign, 2 = step, 3 = sigmoid
+     * @param countMode: 0 = incremental, 1 = batch
+     * @param s: jumlah sel
+     * @param maxIteration
+     * @param epsilon 
+     */
+    public void BackPropagation(ArrayList<ArrayList<Integer>> Data, double[] weight, double learningrate, double t, int[] target, int actMode, int countMode, int s, int maxIteration, double epsilon){
+        
+    }
 }
