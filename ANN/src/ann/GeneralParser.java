@@ -15,10 +15,13 @@ import java.util.ArrayList;
  */
 public class GeneralParser {
     
+    private ArrayList<ArrayList<Integer>> Data = new ArrayList<ArrayList<Integer>>();
+    private ArrayList<Double> weight = new ArrayList<Double>();
+    private ArrayList<Integer> target = new ArrayList<Integer>();
+    
     private BufferedReader br = null;
     
     public GeneralParser(String filelocation){
-        ArrayList<ArrayList<Integer>> Data = new ArrayList<ArrayList<Integer>>();
         
         try{
             int i=0;
@@ -33,7 +36,6 @@ public class GeneralParser {
                             case "@data":                                
                                 break;
                             case "@target":
-                                ArrayList<Integer> target = new ArrayList<Integer>();
                                 String[] sTarget = currentLine.split(" ")[1].split(",");
                                 for(int j=0; j<sTarget.length; j++){
                                     target.add(Integer.parseInt(sTarget[j]));
@@ -45,7 +47,6 @@ public class GeneralParser {
                                 System.out.println("\n");
                                 break;
                             case "@weight":
-                                ArrayList<Double> weight = new ArrayList<Double>();
                                 String[] sWeight = currentLine.split(" ")[1].split(",");
                                 for(int j=0; j<sWeight.length; j++){
                                     double w = Double.parseDouble(sWeight[j]);
@@ -79,5 +80,47 @@ public class GeneralParser {
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * @return the Data
+     */
+    public ArrayList<ArrayList<Integer>> getData() {
+        return Data;
+    }
+
+    /**
+     * @param Data the Data to set
+     */
+    public void setData(ArrayList<ArrayList<Integer>> Data) {
+        this.Data = Data;
+    }
+
+    /**
+     * @return the weight
+     */
+    public ArrayList<Double> getWeight() {
+        return weight;
+    }
+
+    /**
+     * @param weight the weight to set
+     */
+    public void setWeight(ArrayList<Double> weight) {
+        this.weight = weight;
+    }
+
+    /**
+     * @return the target
+     */
+    public ArrayList<Integer> getTarget() {
+        return target;
+    }
+
+    /**
+     * @param target the target to set
+     */
+    public void setTarget(ArrayList<Integer> target) {
+        this.target = target;
     }
 }

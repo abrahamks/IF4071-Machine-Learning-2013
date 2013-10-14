@@ -57,6 +57,7 @@ public class ANN {
         */ 
         //an.NeuralNetwork(data, w, 1, 1, target, 2, 0, 2, 0);
         
-        GeneralParser gp = new GeneralParser("NAND.txt");
+        GeneralParser gp = new GeneralParser("AND1.txt");
+        an.NeuralNetwork(gp.getData(), gp.getWeight(), 0.1, 1, gp.getTarget(), 1, 0, 10, 0);
     }
 }
