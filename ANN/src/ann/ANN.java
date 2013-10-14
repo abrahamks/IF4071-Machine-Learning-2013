@@ -17,6 +17,7 @@ public class ANN {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        ArffParserANN parser = new ArffParserANN("playtennis.arff", "biner");
         ANNOperation an = new ANNOperation();
         ArrayList<ArrayList<Integer>> data = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> x1 = new ArrayList<Integer>();
