@@ -162,7 +162,7 @@ public class ArffParserANN {
         }
     }
     
-    public ArrayList<ArrayList<Integer>> convertData(ArrayList<ArrayList<Integer>> tempData) {
+    public static ArrayList<ArrayList<Integer>> convertData(ArrayList<ArrayList<Integer>> tempData) {
         // convert data into 
         ArrayList<ArrayList<Integer>> _data = new ArrayList<>();
         for (int j=0; j < tempData.get(0).size(); j++) {
@@ -185,6 +185,10 @@ public class ArffParserANN {
         }
         return _data;
     }
+    
+    
+    
+    
 }
 
 
