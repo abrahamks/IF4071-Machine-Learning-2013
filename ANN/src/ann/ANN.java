@@ -18,10 +18,12 @@ public class ANN {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-		System.out.println("\n==Hasil :");
+	ArffParserANN parser = new ArffParserANN("playtennis.arff", "biner");
+        System.out.println("\n==Hasil :");
         System.out.println(parser.data);
         System.out.println("\n==Target :");
-        System.out.println(parser.target);        ANNOperation an = new ANNOperation();
+        System.out.println(parser.target);        
+        ANNOperation an = new ANNOperation();
         ArrayList<ArrayList<Integer>> data = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> x1 = new ArrayList<Integer>();
         ArrayList<Integer> x2 = new ArrayList<Integer>();
@@ -60,6 +62,9 @@ public class ANN {
         ArrayList<Double> weight = new ArrayList<Double>();
         for(int i=0; i<(parser.data.size()+1); i++){
             weight.add(0.5);
-        }        
-            }
+        }
+        
+        GeneralParser gp = new GeneralParser("AND1.txt");
+        an.NeuralNetwork(gp.getData(), gp.getWeight(), 0.1, 1, gp.getTarget(), 1, 0, 10, 0);
+    }
 }
