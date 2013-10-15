@@ -18,7 +18,7 @@ public class ANN {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-	ArffParserANN parser = new ArffParserANN("playtennis.arff", "index");
+	ArffParserANN parser = new ArffParserANN("playtennis.arff", "biner");
         System.out.println("\n==Hasil :");
         System.out.println(parser.data);
         System.out.println("\n==Target :");
@@ -66,12 +66,15 @@ public class ANN {
         
         // menambahkan weight
         ArrayList<Double> weight = new ArrayList<Double>();
-        for(int i=0; i<(parser.data.size()+1); i++){
+        for(int i=0; i<(parser.data.size()); i++){
             weight.add(0.5);
         }
         
-        GeneralParser gp = new GeneralParser("AND1.txt");
-        an.NeuralNetwork(gp.getData(), gp.getWeight(), 0.1, 1, gp.getTarget(), 1, 0, 10, 0);
+        GeneralParser gp = new GeneralParser("XNORb.txt");
+        //an.NeuralNetwork(gp.getData(), gp.getWeight(), 0.1, 1, gp.getTarget(), 1, 0, 10, 0);
         //GeneralParser gp = new GeneralParser("NAND.txt");
-        //an.BackPropagation(data, w, 0.1, 1, t, 3, 0, 2, 3, 0.001);    }
+        an.BackPropagation(gp.getData(), gp.getWeight(), 0.1, 1, gp.getTarget(), 3, 0, 2, 3, 0.001);
+        //an.BackPropagation(parser.data, weight, 0.1, 1, parser.target, 2, 0, 2, 3, 0.001);
+        
+    }
 }

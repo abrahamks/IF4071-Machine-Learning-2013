@@ -223,7 +223,7 @@ public class ANNOperation {
      * @param maxIteration
      * @param epsilon 
      */
-    public void BackPropagation(ArrayList<ArrayList<Integer>> Data, double[] w, double learningrate, double t, ArrayList<Integer> target, int actMode, int countMode, int sel, int maxIteration, double epsilon){
+    public void BackPropagation(ArrayList<ArrayList<Integer>> Data, ArrayList<Double> w, double learningrate, double t, ArrayList<Integer> target, int actMode, int countMode, int sel, int maxIteration, double epsilon){
         int bias = 1;
         // initializing x bias
         double MSE = -0.1;
@@ -260,21 +260,23 @@ public class ANNOperation {
         // menampung hasil delta hidden cell
         ArrayList<Double> MSEOutputCellWeight = new ArrayList<>();
         // ArrayList untuk menampung weight yang digunakan dalam perhitungan MSE
-        for (int j = 0; j < w.length; j++) {
+        for (int j = 0; j < w.size(); j++) {
             // translasi array w ke ArrayList hiddenCellSubWeight
-            hiddenCellSubWeight.add(w[j]);
-            // translasi array w ke ArrayList outputCellWeight
-            outputCellWeight.add(w[j]);
-            if (j == w.length-1) {
-                hiddenCellSubWeight.add(0, w[0]);
+            hiddenCellSubWeight.add(w.get(j));
+            
+            if (j == w.size()-1) {
+                hiddenCellSubWeight.add(0, w.get(0));
                 // set wBias, index0, pada hiddenCellWeight
-                outputCellWeight.add(0, w[0]);
+                outputCellWeight.add(0, w.get(0));
                 // set wBias, index0, pada outputCellWeight
             }
         }
+        
         for (int s = 0; s < sel; s++) {
             // inisialisasi weight untuk setiap hidden cell
             hiddenCellWeight.add(hiddenCellSubWeight);
+            // translasi array w ke ArrayList outputCellWeight
+            outputCellWeight.add(w.get(s));
         }
         while(flag == false) {
             // melakukan proses iterasi
@@ -389,9 +391,6 @@ public class ANNOperation {
                             // kosongkan ArrayList temporary untuk digunakan dalam update output cell
                         }
                         tempALfor1cell = new ArrayList<>();
-                        if (j==(Data.get(0).size())-1) {
-                            System.out.println("check");
-                        }
                         double newW =0.0;
                         for (int k=0; k<outputCellWeight.size(); k++) {
                         // update output cell weight untuk data berikutnya
