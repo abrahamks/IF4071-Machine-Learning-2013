@@ -17,10 +17,12 @@ public class ArffParserANN {
     private BufferedReader br = null;
     public ArrayList<ArrayList<Integer>> data;
     public ArrayList<ArrayList<String>> attributes;
+    public ArrayList<Integer> target;
     public ArffParserANN (String fileLocation, String mode) {
         int i = 0;
         data = new ArrayList<>();
         attributes = new ArrayList<>();
+        target = new ArrayList<>();
         // insialisasi data dan attributes
         ArrayList<ArrayList<Integer>> tempData = new ArrayList<>(); 
         // temporary Data untuk melakukan konversi ke Data
@@ -79,6 +81,7 @@ public class ArffParserANN {
                                         tempData.add(tempDataRow);
                                     }
                                 }
+                                break;
                             }
                             case "biner":
                             {
@@ -128,13 +131,15 @@ public class ArffParserANN {
                                         }
                                     }
                                 }
+                                break;
                             }
                         }
                     }
                 }
             }
             data = convertData(tempData);
-            System.out.println("data:\n" +data.toString());
+            target.addAll(data.get(data.size()-1)); // index terakhir merupakan target
+            data.remove(data.size()-1);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -18,30 +18,27 @@ public class ANN {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        //ArffParserANN parser = new ArffParserANN("playtennis.arff", "biner");
+        ArffParserANN parser = new ArffParserANN("playtennis.arff", "biner");
+        System.out.println("\n==Hasil :");
+        System.out.println(parser.data);
+        System.out.println("\n==Target :");
+        System.out.println(parser.target);
         ANNOperation an = new ANNOperation();
         ArrayList<ArrayList<Integer>> data = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> x1 = new ArrayList<Integer>();
         ArrayList<Integer> x2 = new ArrayList<Integer>();
-        ArrayList<Integer> x3 = new ArrayList<Integer>();
-        x1.add(0);
-        x1.add(0);
         x1.add(1);
         x1.add(1);
-        x3.add(1);
-        x3.add(1);
-        x3.add(1);
-        x3.add(1);
-        x2.add(0);
+        x1.add(0);
+        x1.add(0);
         x2.add(1);
         x2.add(0);
         x2.add(1);
+        x2.add(0);
         data.add(x1);
         data.add(x2);
-        data.add(x3);
-        
-        double[] w = {2,3,0};
-        int[] target = {1,1,1,0};
+        double[] w = {0.05, 0.05, 0.05};
+        int[] target = {1,0,0,1};
                
         /**    
         * Topologi: 1 perceptron
@@ -57,6 +54,7 @@ public class ANN {
         */ 
         //an.NeuralNetwork(data, w, 1, 1, target, 2, 0, 2, 0);
         
-        GeneralParser gp = new GeneralParser("NAND.txt");
+        //GeneralParser gp = new GeneralParser("NAND.txt");
+        //an.BackPropagation(data, w, 0.1, 1, target, 3, 0, 2, 10, 0);
     }
 }
