@@ -29,16 +29,13 @@ public class ANN {
         ArrayList<Integer> x2 = new ArrayList<Integer>();
         x1.add(1);
         x1.add(1);
-        x1.add(0);
-        x1.add(0);
+
         x2.add(1);
         x2.add(0);
         x2.add(1);
-        x2.add(0);
         data.add(x1);
         data.add(x2);
-        double[] w = {0.05, 0.05, 0.05};
-        int[] target = {1,0,0,1};
+        int[] target = {1,1,1,0};
                
         /**    
         * Topologi: 1 perceptron
