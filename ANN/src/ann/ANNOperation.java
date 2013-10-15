@@ -211,19 +211,180 @@ public class ANNOperation {
     }
     
     /**
-     * topologi: 1 hidden layer, s cell
+     * topologi: 1 hidden layer, sel cell
      * @param Data
-     * @param weight
+     * @param w
      * @param learningrate
      * @param t
      * @param target
      * @param actMode: 0 = linear, 1 = sign, 2 = step, 3 = sigmoid
      * @param countMode: 0 = incremental, 1 = batch
-     * @param s: jumlah sel
+     * @param sel: jumlah sel
      * @param maxIteration
      * @param epsilon 
      */
-    public void BackPropagation(ArrayList<ArrayList<Integer>> Data, double[] weight, double learningrate, double t, int[] target, int actMode, int countMode, int s, int maxIteration, double epsilon){
+    public void BackPropagation(ArrayList<ArrayList<Integer>> Data, double[] w, double learningrate, double t, ArrayList<Integer> target, int actMode, int countMode, int sel, int maxIteration, double epsilon){
+        int bias = 1;
+        // initializing x bias
+        ArrayList<Integer> xBias = new ArrayList<>();
+        for (int i=0; i<Data.get(0).size();i++) {
+            // membuat xBias dengan jumlah elemen sama dengan x0
+            xBias.add(bias);
+        }
+        Data.add(0, xBias);
+        // append bias pada index 0
+        // insialisasi jumlah x (x0..xN)
+        // proses penghitungan setiap hidden cell
+        ArrayList<Double> outputCellWeight = new ArrayList<>();
+        // inisialisasi weight untuk ouput cell
+        ArrayList<ArrayList<Double>> hiddenCellWeight = new ArrayList<>();
+        // arrayList level 1 --> weight keseluruhan yang berhubungan dengan hidden perceptron
+        ArrayList<Double> hiddenCellSubWeight = new ArrayList<>();
+        // temporary ArrayList
+        // w0..wN dari hiddenCellWeight
+        // pastikan w.length dan hidenCellSubWeight.size() sama
+        double hiddenCellOutput = 0.0;
+        // output dari hiddenCell
+        double output = 0.0;
+        // output dari outputCell
+        ArrayList<Double> o = new ArrayList<>(); 
+        // menampung hasil output hidden cell
+        double deltaOutputCell = 0.0;
+        // delta Output
+        ArrayList<Double> deltaHiddenCell = new ArrayList<>();
+        // menampung hasil delta hidden cell
+        for (int j = 0; j < w.length; j++) {
+            // translasi array w ke ArrayList hiddenCellSubWeight
+            hiddenCellSubWeight.add(w[j]);
+            // translasi array w ke ArrayList outputCellWeight
+            outputCellWeight.add(w[j]);
+            if (j == w.length-1) {
+                // set wBias, index0, pada outputCellWeight
+                outputCellWeight.add(0, w[0]);
+            }
+        }
+        for (int s = 0; s < sel; s++) {
+            // inisialisasi weight untuk setiap hidden cell
+            hiddenCellWeight.add(hiddenCellSubWeight);
+        }
         
+        for (int j = 0; j < Data.get(0).size(); j++) {
+            // mulai proses penghitungan untuk setiap sel
+            PrintHiddenCellWeightTable(hiddenCellWeight);
+            for (int s = 0; s < sel; s++) {
+                double sigma = 0.0;
+                // pemrosesan seluruh data
+                // penghitungan sigma
+                for (int n = 0; n < Data.size(); n++) {
+                    // x0..xN
+                    sigma += Data.get(n).get(j) * hiddenCellWeight.get(s).get(n);
+                    // sigma += xn * wn
+                }
+                // hitung output (o<1,1>) berdasarkan fungsi
+                DecimalFormat df = new DecimalFormat("##.##");
+                sigma = Double.parseDouble(df.format(sigma));
+                System.out.println("sigma " + s + ":" +sigma);
+                switch(actMode){
+                    case 0: // linear
+                        hiddenCellOutput = sigma;
+                        break;
+                    case 1: // sign
+                        hiddenCellOutput = SignFunction(sigma);
+                        break;
+                    case 2: // step
+                        hiddenCellOutput = StepFunction(sigma, t);
+                        break;
+                    case 3: // sigmoid
+                        hiddenCellOutput = SigmoidFunction(sigma);
+                        break;
+                }
+                hiddenCellOutput = Double.parseDouble(df.format(hiddenCellOutput));
+                o.add(hiddenCellOutput);
+                System.out.println("out<1," + (s+1) +"> : " + hiddenCellOutput);
+                if (s == sel-1) {
+                    // hitung output sel
+                    sigma = 0;
+                    for (int i=0; i<o.size(); i++) {
+                        // +1 karena ada w0(bias)
+                        if (i==0) {
+                            // bias
+                            sigma += 0.05 + o.get(i) * outputCellWeight.get(i+1);
+                        }
+                        else {
+                            // o<1,1> * w1
+                            // +1 karena index 0 pada outputCellWeight digunakan utk bias
+                            System.out.println("i" + i +":" + o.get(i) + "*" + outputCellWeight.get(i+1));
+                            sigma += o.get(i) * outputCellWeight.get(i+1);
+                        }
+                    }
+                    sigma = Double.parseDouble(df.format(sigma));
+                    System.out.println("sigma_output:" +sigma);
+                    // assign output
+                    switch(actMode){
+                    case 0: // linear
+                        output = sigma;
+                        break;
+                    case 1: // sign
+                        output = SignFunction(sigma);
+                        break;
+                    case 2: // step
+                        output = StepFunction(sigma, t);
+                        break;
+                    case 3: // sigmoid
+                        output = SigmoidFunction(sigma);
+                        break;
+                    }
+                    deltaOutputCell = output * (1-output)*(target.get(j)-output);
+                    // deltaOutput = output * (1-output)(error) // target-output    
+                    for (int x=0; x<sel; x++) {
+                        // hitung delta sebanyak hidden cell
+                        // delta 1,1 = o1,1(1-o1,1)(w1*delta2,1)
+                        double tempDelta = o.get(x)*(1-o.get(x))*(outputCellWeight.get(x))*deltaOutputCell;
+//                        System.out.println("tempDelta =" + o.get(x) + "*" + (1-o.get(x)) + "*" + (outputCellWeight.get(x)) + "*" + deltaOutputCell);
+                        deltaHiddenCell.add(tempDelta);
+                    }
+                    System.out.println("delta 2:" +deltaOutputCell);
+                    PrintDeltaHiddenCell(deltaHiddenCell);
+                    System.out.println("===End of Data-" + j + "===\n");
+                    o.clear();
+                    // kosongkan output sel
+                    
+                    for (int i=0; i<hiddenCellWeight.size(); i++) {
+                        // i --> jumlah hidden cell
+                        ArrayList<Double> tempALfor1cell = new ArrayList<>();
+                        // temporary array list to append all new weight
+                        for (int k=0; k<hiddenCellWeight.get(0).size(); k++) {
+                            // update hidden cell weight untuk data berikutnya
+//                            System.out.println("hhhh_" +"i_" + i  + "k_" + k + hiddenCellWeight.get(i).get(k));
+//                            System.out.println("+" + learningrate
+//                                    + "*" + deltaHiddenCell.get(i) + "*" + Data.get(j).get(i));
+                            double newW = hiddenCellWeight.get(i).get(k) + learningrate*deltaHiddenCell.get(i)*Data.get(j).get(i);
+                            newW = Double.parseDouble(df.format(newW));
+                            tempALfor1cell.add(newW);
+                            // wn' = wn + learningRate * delta i *  x
+                        }
+                        hiddenCellWeight.set(i, tempALfor1cell);
+                    }
+                    
+                    // update outputCellWeight
+                    // TODO
+                }
+            }
+        }
+    }
+    
+    public void PrintHiddenCellWeightTable(ArrayList<ArrayList<Double>> hiddenCellWeight) {
+        for (int i=0; i<hiddenCellWeight.size();  i++) {
+            // hiddenCellWeight.size() --> jumlah hidden sel
+            for (int j=0; j<hiddenCellWeight.get(0).size(); j++) {
+                System.out.println("w" + i + "" + j + ":" + hiddenCellWeight.get(i).get(j));
+            }
+        }
+    }
+    
+    public void PrintDeltaHiddenCell(ArrayList<Double> deltaHidden) {
+        for (int i=0; i<deltaHidden.size(); i++) {
+            System.out.println("delta<1," + i +"> :" + deltaHidden.get(i));
+        }
     }
 }
