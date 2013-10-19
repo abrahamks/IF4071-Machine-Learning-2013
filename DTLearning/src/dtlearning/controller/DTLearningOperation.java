@@ -137,7 +137,7 @@ public class DTLearningOperation {
         }
         
         // Collections.sort(best, new CustomComparator());
-        double maxVal = Double.MIN_VALUE;
+        double maxVal = 0.0;
         for (int i = 0; i < best.size(); i++){
             if (!Double.isNaN(best.get(i).getGain())){
                 if (best.get(i).getGain() > maxVal){
@@ -183,9 +183,10 @@ public class DTLearningOperation {
         
         // iterate data in index indexParent for value=attrValue
         for (int i=0; i< oldEx.getData().size(); i++) {
-			System.out.println("data : " + oldEx.getData().toString());
-            System.out.println("line : " + oldEx.getData().get(i).get(indexParent));
-            System.out.println("attrValue :" + attrValue + "---" + indexParent);            if (!(oldEx.getData().get(i).get(indexParent).equals(attrValue))) {
+//			System.out.println("data : " + oldEx.getData().toString());
+//            System.out.println("line : " + oldEx.getData().get(i).get(indexParent));
+//            System.out.println("attrValue :" + attrValue + "---" + indexParent);
+            if (!(oldEx.getData().get(i).get(indexParent).equals(attrValue))) {
                 lineRemoved = oldEx.getData().remove(i).toString(); // remove dari newEx karena ga penting
                 i--;
             }
@@ -202,13 +203,13 @@ public class DTLearningOperation {
     public Node ID3(Examples Ex, Attribute Target_attr, ArrayList<Attribute> Attributes) {
         // create a Root node for the tree
         Node root = new Node();
-        if (Target_attr.getAttributeName().equals("head_shape")){
-            for (int xx=0; xx < Target_attr.getAttributeValue().size() ; xx++)
-            if ((Target_attr.getAttributeValue().get(xx)).equals("round")) {
-             
-                System.out.println("kayaknya problem gan");   
-            }
-        }
+//        if (Target_attr.getAttributeName().equals("head_shape")){
+//            for (int xx=0; xx < Target_attr.getAttributeValue().size() ; xx++)
+//            if ((Target_attr.getAttributeValue().get(xx)).equals("round")) {
+//             
+//                System.out.println("kayaknya problem gan");   
+//            }
+//        }
         if (Ex.isExampleEmpty()){
             root.setAttribute(null);
             root.setChildren(new HashMap<String,Object>());
@@ -218,7 +219,6 @@ public class DTLearningOperation {
 //            root.setAttribute(Target_attr);
 //            root.setAllChildrenPos();
             root.setAttribute(null);
-            root.setChildren(null);
             root.setChildren(new HashMap<String,Object>());
         }
         else if (Ex.isExampleNegative()) {
@@ -228,14 +228,15 @@ public class DTLearningOperation {
             root.setAttribute(null);
             root.setChildren(null);
         }
-        else if (Attributes.size()==2) {
+        else if (Attributes.size()==1) {
             // 2 --> targetAttribute & classification
-            root.setAttribute(Target_attr);
+            root.setAttribute(null);
+            
             // define index Target_attr dari example
             int index = Ex.getAttributes().indexOf(Target_attr);
             int numOfValue = Ex.getAttributes().get(index).getAttributeValue().size();
             int numOfAttr = Ex.getAttributes().size();
-            HashMap<String, Object> mostCommonValue = new HashMap<String,Object>();
+            // HashMap<String, Object> mostCommonValue = new HashMap<String,Object>();
             
             for(int i=0; i<numOfValue; i++){
                 int nYes=0; // jumlah value Yes
@@ -254,7 +255,6 @@ public class DTLearningOperation {
                     // set attribute value dengan "yes"
                     //mostCommonValue.put(Target_attr.getAttributeValue().get(i), "yes");
                     root.setChildren(new HashMap<String,Object>());
-                    break;
                 }else{
                     // set attribute value dengan "no"
                     // mostCommonValue.put(Target_attr.getAttributeValue().get(i), "no");
@@ -262,15 +262,15 @@ public class DTLearningOperation {
                 }
             }
             // validas
-            for (int x=0; x < Target_attr.getAttributeValue().size(); x++) {
-                String tempkey="";
-                tempkey = Target_attr.getAttributeValue().get(x);
-                if (mostCommonValue.get(tempkey) instanceof java.lang.String){
-                    String val = (String) (mostCommonValue).get(tempkey);
-                    System.out.println("_____" + val);
-                }
-            }
-            root.setChildren(mostCommonValue);
+//            for (int x=0; x < Target_attr.getAttributeValue().size(); x++) {
+//                String tempkey="";
+//                tempkey = Target_attr.getAttributeValue().get(x);
+//                if (mostCommonValue.get(tempkey) instanceof java.lang.String){
+//                    String val = (String) (mostCommonValue).get(tempkey);
+//                    System.out.println("_____" + val);
+//                }
+//            }
+            /// root.setChildren(mostCommonValue);
         }
         else {
             String tempAttr = BestInfGain(Ex); // A <-- attribute name best classifies Example
@@ -296,7 +296,7 @@ public class DTLearningOperation {
                 // filter examples Ex by value tempAttr from Attribute A(Parent)
                 if (exampleVi.getData().isEmpty()) {
                     // dari sini
-                    int index = -1;
+                    int index = 0;
                     for (int j = 0; j < Excpy.getAttributes().size(); j++){
                         if (Excpy.getAttributes().get(j).getAttributeName().equals(Target_attr.getAttributeName())){
                             index = j;
@@ -307,7 +307,7 @@ public class DTLearningOperation {
                     int numOfValue = Excpy.getAttributes().get(index).getAttributeValue().size();
                     int numOfAttr = Excpy.getAttributes().size();
                     
-                    HashMap<String, Object> mostCommonValue = new HashMap<String,Object>();
+                    // HashMap<String, Object> mostCommonValue = new HashMap<String,Object>();
 
                     for(int k=0; k<numOfValue; k++){
                         int nYes=0; // jumlah value Yes
@@ -324,13 +324,14 @@ public class DTLearningOperation {
 
                         if(nYes > nNo){
                             // set attribute value dengan "yes"
-                            mostCommonValue.put(Target_attr.getAttributeValue().get(k), "yes");
+                            // mostCommonValue.put(Target_attr.getAttributeValue().get(k), "yes");
+                            branch.put(A.getAttributeValue().get(i), new HashMap<String,Object>());
                         }else{
                             // set attribute value dengan "no"
-                            mostCommonValue.put(Target_attr.getAttributeValue().get(k), "no");
+                            // mostCommonValue.put(Target_attr.getAttributeValue().get(k), "no");
+                            branch.put(A.getAttributeValue().get(i),null);
                         }
                     }
-                    root.setChildren(mostCommonValue);
                 }
                 else{
                     Node NodeID3 = new Node();
@@ -592,4 +593,5 @@ public Examples SplitforDataTrain(Examples ex, double percentage){
         cm.add(noMatrix); // model no
         
         return cm;
-    }}}
+    }
+}
